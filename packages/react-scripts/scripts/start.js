@@ -109,6 +109,17 @@ checkBrowsers(paths.appPath, isInteractive)
       errors: errors =>
         devServer.sockWrite(devServer.sockets, 'errors', errors),
     };
+
+    // @hook override webpack config
+    const path = require('path');
+    const webpackConfigOverride = path.join(
+      paths.appPath,
+      'config/webpack.config.override.js'
+    );
+    if (fs.existsSync(webpackConfigOverride)) {
+      require(webpackConfigOverride)(config, 'development');
+    }
+
     // Create a webpack compiler that is configured with custom messages.
     const compiler = createCompiler({
       appName,
@@ -132,6 +143,16 @@ checkBrowsers(paths.appPath, isInteractive)
       proxyConfig,
       urls.lanUrlForConfig
     );
+
+    // @hook override webpackDevServer config
+    const serverConfigOverride = path.join(
+      paths.appPath,
+      'config/webpackDevServer.config.override.js'
+    );
+    if (fs.existsSync(serverConfigOverride)) {
+      require(serverConfigOverride)(serverConfig, process.env.NODE_ENV);
+    }
+
     const devServer = new WebpackDevServer(compiler, serverConfig);
     // Launch WebpackDevServer.
     devServer.listen(port, HOST, err => {

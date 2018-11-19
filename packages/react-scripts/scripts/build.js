@@ -62,6 +62,15 @@ if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
 // Generate configuration
 const config = configFactory('production');
 
+// @hook override webpack config
+const webpackConfigOverride = path.join(
+  paths.appPath,
+  'config/webpack.config.override.js'
+);
+if (fs.existsSync(webpackConfigOverride)) {
+  require(webpackConfigOverride)(config, 'production');
+}
+
 // We require that you explicitly set browsers and do not fall back to
 // browserslist defaults.
 const { checkBrowsers } = require('react-dev-utils/browsersHelper');

@@ -8,6 +8,7 @@
 'use strict';
 
 const fs = require('fs');
+const path = require('path');
 const chalk = require('react-dev-utils/chalk');
 const paths = require('../../config/paths');
 const modules = require('../../config/modules');
@@ -146,5 +147,15 @@ module.exports = (resolve, rootDir, isEjecting) => {
       process.exit(1);
     }
   }
+
+  // @hook override webpack config
+  const jestConfigOverride = path.join(
+    paths.appPath,
+    'config/jest.config.override.js'
+  );
+  if (fs.existsSync(jestConfigOverride)) {
+    require(jestConfigOverride)(config);
+  }
+
   return config;
 };

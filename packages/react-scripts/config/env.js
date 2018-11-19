@@ -22,6 +22,12 @@ if (!NODE_ENV) {
   );
 }
 
+// @hook load dynamic environment variables
+const envJs = path.join(paths.appPath, 'config/env.js');
+if (fs.existsSync(envJs)) {
+  require(envJs);
+}
+
 // https://github.com/bkeepers/dotenv#what-other-env-files-can-i-use
 const dotenvFiles = [
   `${paths.dotenv}.${NODE_ENV}.local`,
